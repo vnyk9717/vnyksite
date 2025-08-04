@@ -2,52 +2,213 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>VNYK | Official Website</title>
+  <title>VNYK | Dreamy Synth Explorer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="style/main.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Bebas Neue', sans-serif;
+      background: linear-gradient(135deg, #4B006E 0%, #8F2FFF 100%);
+    }
+    .parallax {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .parallax video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 1;
+    }
+    .tint-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(206,169,83,0.2);
+      z-index: 2;
+    }
+    .overlay {
+      position: relative;
+      z-index: 3;
+      height: 100%;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .overlay img {
+      max-width: 400px;
+      transition: filter 0.5s ease-in-out;
+    }
+    .logo-glow {
+      filter: drop-shadow(0 0 10px #ff00cc) drop-shadow(0 0 20px #00ffee);
+    }
+    .logo-pulse {
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% {
+        filter: drop-shadow(0 0 10px #ff00cc) drop-shadow(0 0 20px #00ffee);
+        transform: scale(1);
+      }
+      50% {
+        filter: drop-shadow(0 0 25px #ff00cc) drop-shadow(0 0 35px #00ffee);
+        transform: scale(1.05);
+      }
+    }
+    .vnyk-disco {
+      background: linear-gradient(90deg, #ff00cc, #3333ff, #00ffee, #ff00cc);
+      background-size: 400% 400%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: discoGradient 6s ease-in-out infinite;
+      transition: text-shadow 0.3s ease-in-out;
+    }
+    .vnyk-disco.glow {
+      text-shadow: 0 0 8px #ff00cc, 0 0 16px #00ffee;
+    }
+    @keyframes discoGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+  </style>
 </head>
-<body>
-  <header>
-    <img src="images/logo.png" alt="VNYK Logo" style="max-width: 150px;" />
-    <h1>VNYK — Dreamy. Melodic. Groovy.</h1>
-    <nav>
-      <a href="#about">About</a>
-      <a href="#listen">Listen</a>
-      <a href="#contact">Contact</a>
-    </nav>
+<body class="text-white">
+
+  <header class="bg-transparent sticky top-0 z-50 p-4 backdrop-blur-lg transition-all duration-300 ease-in-out" id="mainHeader">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 id="logo" class="vnyk-disco text-3xl md:text-5xl font-bold transition-all duration-300">VNYK</h1>
+      <nav class="space-x-6 text-sm md:text-base uppercase">
+        <a href="#about" class="hover:text-red-400">About</a>
+        <div class="relative group inline-block">
+          <a href="#releases" class="hover:text-red-400 cursor-pointer">Releases</a>
+          <div class="absolute left-0 mt-2 w-40 bg-black border border-red-500 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50">
+            <a href="#Yeah" class="block px-4 py-2 hover:bg-red-600 hover:text-white">Yeah</a>
+            <a href="#Cybro" class="block px-4 py-2 hover:bg-red-600 hover:text-white">Cybro</a>
+            <a href="#Only you" class="block px-4 py-2 hover:bg-red-600 hover:text-white">Only You</a>
+            <a href="#Dukha" class="block px-4 py-2 hover:bg-red-600 hover:text-white">Dukha</a>
+          </div>
+        </div>
+        <div class="relative group inline-block">
+          <a href="#contact" class="hover:text-red-400 cursor-pointer">Contact</a>
+          <div class="absolute left-0 mt-2 w-40 bg-black border border-red-500 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-50">
+            <a href="mailto:vnykofficial@gmail.com" class="block px-4 py-2 hover:bg-red-600 hover:text-white">Email</a>
+            <a href="https://instagram.com/vnykofficial" class="block px-4 py-2 hover:bg-red-600 hover:text-white">Instagram</a>
+            <a href="https://facebook.com/vnykofficial" class="block px-4 py-2 hover:bg-red-600 hover:text-white">Facebook</a>
+            <a href="https://x.com/vnykofficial" class="block px-4 py-2 hover:bg-red-600 hover:text-white">X</a>
+          </div>
+        </div>
+      </nav>
+    </div>
   </header>
 
-  <section id="about">
-    <h2>About VNYK</h2>
-    <img src="images/cover.jpeg" alt="VNYK Artist Photo" style="max-width: 100%; border-radius: 12px;" />
-    <p>VNYK is a sonic explorer, blending melody, groove, and dream-like textures into every track. Inspired by artists like Madeon and Tigran Hamasyan, VNYK creates immersive instrumental worlds you can lose yourself in.</p>
-  </section>
-
-  <section id="listen">
-    <h2>Latest Release: "Yeah"</h2>
-    <p>VNYK’s latest single “Yeah” is out now — a euphoric synth-driven track that's both dreamy and energizing.</p>
-    <a class="btn" href="https://open.spotify.com/artist/4xR2jVK5pPbaPtiytPIqC2" target="_blank">Listen on Spotify</a>
-    <a class="btn" href="https://music.apple.com/artist/vnyk/1718270406" target="_blank">Listen on Apple Music</a>
-  </section>
-
-  <section id="contact">
-    <h2>Stay Connected</h2>
-    <p>Join the mailing list for exclusive previews, behind-the-scenes content, and updates:</p>
-    <form>
-      <input type="email" placeholder="Your email" required />
-      <br />
-      <button type="submit">Subscribe</button>
-    </form>
-  </section>
-
-  <footer>
-    <p>Follow VNYK:</p>
-    <div class="social">
-      <a href="https://instagram.com/vnykofficial" target="_blank">Instagram</a>
-      <a href="https://open.spotify.com/artist/4xR2jVK5pPbaPtiytPIqC2" target="_blank">Spotify</a>
-      <a href="https://music.apple.com/artist/vnyk/1718270406" target="_blank">Apple Music</a>
+  <div class="parallax">
+    <video autoplay loop muted playsinline>
+      <source src="videos/vnyk_parallax.mp4" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="tint-overlay"></div>
+    <div class="overlay">
+      <img src="images/logo.png" alt="VNYK Logo" id="logoImage" />
     </div>
-    <p>© 2025 VNYK. All rights reserved.</p>
+  </div>
+
+  <section id="about" class="relative py-20 px-6 max-w-5xl mx-auto text-center backdrop-blur-lg z-10" style="background-color: rgba(15, 148, 225, 0.3); overflow: hidden;">
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20 z-0"></div>
+    <div class="relative z-10">
+      <h2 class="text-4xl md:text-5xl text-pink-500 mb-6">About</h2>
+      <img src="images/IMG_0786.jpg" alt="VNYK Portrait" class="rounded-xl mb-6 shadow-xl mx-auto w-full max-w-md" />
+      <p class="text-white text-xl">VNYK blends East and West, analog and digital, synthwave & disco energy and emotional depth. Inspired by western and eastern cinematic vibes.</p>
+    </div>
+  </section>
+
+  <section id="contact" class="relative py-20 px-6 text-center backdrop-blur-lg z-10" style="background-color: rgba(15, 148, 225, 0.3); overflow: hidden;">
+    <div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20 z-0"></div>
+    <div class="relative z-10">
+      <h2 class="text-4xl md:text-5xl text-pink-500 mb-6">Stay in Touch</h2>
+      <form id="subscribeForm" action="https://script.google.com/macros/s/AKfycbxjjnBTLp7Ai8SxmJrDKf7mjUbYkQue6wQInVj8jH2z44RjNYf9HYPg4C7XXAvBrkrfBQ/exec" method="POST" target="hidden_iframe" class="max-w-xl mx-auto">
+        <input type="email" id="emailInput" name="email" placeholder="Your email" required class="w-full p-3 rounded-md text-black mb-4" />
+        <button type="submit" class="bg-pink-600 hover:bg-pink-700 px-6 py-3 rounded text-white font-bold transition-all duration-300 ease-in-out hover:scale-105 shadow-lg">Subscribe</button>
+      </form>
+      <p id="thankYouMsg" class="mt-6 text-green-300 text-xl hidden opacity-0 transition-opacity duration-700 ease-in-out">Welcome to the fam 💌</p>
+      <iframe name="hidden_iframe" style="display:none;"></iframe>
+    </div>
+  </section>
+
+  <footer class="relative text-center py-10 text-pink-200 backdrop-blur-lg z-10" style="background-color: rgba(15, 148, 225, 0.3); overflow: hidden;">
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20 z-0"></div>
+    <div class="relative z-10">
+      <p class="mb-4 text-sm uppercase tracking-wider">Follow VNYK</p>
+      <div class="space-x-6 text-sm">
+        <a href="https://instagram.com/vnykofficial" class="hover:text-pink-400">Instagram</a>
+        <a href="https://music.amazon.in/artists/B088FZVX5R/vnyk" class="hover:text-pink-400">Amazon Music</a>
+        <a href="https://open.spotify.com/artist/4xR2jVK5pPbaPtiytPIqC2" class="hover:text-pink-400">Spotify</a>
+        <a href="https://music.apple.com/artist/vnyk/1718270406" class="hover:text-pink-400">Apple Music</a>
+      </div>
+      <p class="mt-4 text-xs tracking-widest opacity-80">© 2025 VNYK. All rights reserved.</p>
+    </div>
   </footer>
+
+  <script>
+    const form = document.getElementById('subscribeForm');
+    const msg = document.getElementById('thankYouMsg');
+    const emailInput = document.getElementById('emailInput');
+    const logo = document.getElementById('logo');
+    const logoImage = document.getElementById('logoImage');
+    let lastScrollTop = 0;
+
+    form.addEventListener('submit', function (e) {
+      const email = emailInput.value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address.");
+        e.preventDefault();
+        return;
+      }
+
+      const stored = localStorage.getItem("vnyk_subscribed_emails") || "";
+      if (stored.includes(email)) {
+        alert("You've already subscribed!");
+        e.preventDefault();
+        return;
+      } else {
+        localStorage.setItem("vnyk_subscribed_emails", stored + "," + email);
+      }
+
+      setTimeout(() => {
+        msg.classList.remove('hidden');
+        msg.classList.add('opacity-100');
+        emailInput.value = "";
+        alert("You're now subscribed. Check your inbox for updates!");
+      }, 1000);
+    });
+
+    window.addEventListener("scroll", function () {
+      const header = document.getElementById("mainHeader");
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > lastScrollTop) {
+        header.style.transform = "translateY(-100%)";
+        logo.classList.remove("glow");
+        logoImage.classList.remove("logo-glow", "logo-pulse");
+      } else {
+        header.style.transform = "translateY(0)";
+        logo.classList.add("glow");
+        logoImage.classList.add("logo-glow", "logo-pulse");
+      }
+
+      lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+    });
+  </script>
+
 </body>
 </html>
