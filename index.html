@@ -12,11 +12,13 @@
       font-family: 'Bebas Neue', sans-serif;
       background: linear-gradient(135deg, #4B006E 0%, #8F2FFF 100%);
     }
+
     .parallax {
       position: relative;
       height: 100vh;
       overflow: hidden;
     }
+
     .parallax video {
       position: absolute;
       top: 0;
@@ -26,6 +28,7 @@
       object-fit: cover;
       z-index: 1;
     }
+
     .tint-overlay {
       position: absolute;
       top: 0;
@@ -35,6 +38,7 @@
       background-color: rgba(206,169,83,0.2);
       z-index: 2;
     }
+
     .overlay {
       position: relative;
       z-index: 3;
@@ -44,16 +48,20 @@
       justify-content: center;
       align-items: center;
     }
+
     .overlay img {
       max-width: 400px;
       transition: filter 0.5s ease-in-out;
     }
+
     .logo-glow {
       filter: drop-shadow(0 0 10px #ff00cc) drop-shadow(0 0 20px #00ffee);
     }
+
     .logo-pulse {
       animation: pulseGlow 2.5s ease-in-out infinite;
     }
+
     @keyframes pulseGlow {
       0%, 100% {
         filter: drop-shadow(0 0 10px #ff00cc) drop-shadow(0 0 20px #00ffee);
@@ -64,6 +72,7 @@
         transform: scale(1.05);
       }
     }
+
     .vnyk-disco {
       background: linear-gradient(90deg, #ff00cc, #3333ff, #00ffee, #ff00cc);
       background-size: 400% 400%;
@@ -72,9 +81,7 @@
       animation: discoGradient 6s ease-in-out infinite;
       transition: text-shadow 0.3s ease-in-out;
     }
-    .vnyk-disco.glow {
-      text-shadow: 0 0 8px #ff00cc, 0 0 16px #00ffee;
-    }
+
     @keyframes discoGradient {
       0% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
@@ -162,7 +169,6 @@
     const form = document.getElementById('subscribeForm');
     const msg = document.getElementById('thankYouMsg');
     const emailInput = document.getElementById('emailInput');
-    const logo = document.getElementById('logo');
     const logoImage = document.getElementById('logoImage');
     let lastScrollTop = 0;
 
@@ -198,11 +204,9 @@
 
       if (scrollTop > lastScrollTop) {
         header.style.transform = "translateY(-100%)";
-        logo.classList.remove("glow");
         logoImage.classList.remove("logo-glow", "logo-pulse");
       } else {
         header.style.transform = "translateY(0)";
-        logo.classList.add("glow");
         logoImage.classList.add("logo-glow", "logo-pulse");
       }
 
