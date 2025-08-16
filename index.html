@@ -170,67 +170,59 @@
         </div>
       </a>
       </div>
-      <!-- Audio Section -->
-       
-      <h2 class="text-4xl md:text-5xl text-pink-500 mb-6">Listen</h2>
+     
+<h2 class="text-4xl md:text-5xl text-pink-500 mb-6">Listen</h2>
 <div>
-  <!-- Optional Master Volume Control -->
+  <!-- Master Volume Control -->
   <div class="master-volume">
     <label class="text-white font-bold">Master Volume</label>
     <input type="range" min="0" max="1" step="0.01" value="1" id="masterVolume">
   </div>
 
-  <script>
-    const masterSlider = document.getElementById('masterVolume');
-    const audios = ['audio1','audio2','audio3','audio4'].map(id => document.getElementById(id));
-
-    masterSlider.addEventListener('input', () => {
-      audios.forEach(audio => {
-        audio.volume = masterSlider.value;
-      });
-    });
-  </script>
-</div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <!-- Audio 1 -->
-      <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
-        <p class="mb-4 text-lg font-bold text-pink-300">Yeah</p>
-        <audio controls class="w-full">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+    <!-- Audio Tracks -->
+    <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <p class="mb-4 text-lg font-bold text-pink-300">Yeah</p>
+      <audio controls class="track-audio w-full">
         <source src="Audios/Yeah.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
-        </audio>
-      </div>
-      <!-- Audio 2 -->
-      <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
-        <p class="mb-4 text-lg font-bold text-pink-300">Cybro</p>
-        <audio controls class="w-full">
+      </audio>
+    </div>
+    <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <p class="mb-4 text-lg font-bold text-pink-300">Cybro</p>
+      <audio controls class="track-audio w-full">
         <source src="Audios/Cybro.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
-        </audio>
-      </div>
-      <!-- Audio 3 -->
-      <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
-        <p class="mb-4 text-lg font-bold text-pink-300">Only You</p>
-        <audio controls class="w-full">
+      </audio>
+    </div>
+    <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <p class="mb-4 text-lg font-bold text-pink-300">Only You</p>
+      <audio controls class="track-audio w-full">
         <source src="Audios/Only You.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
-        </audio>
-      </div>
-      <!-- Audio 4 -->
-      <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
-        <p class="mb-4 text-lg font-bold text-pink-300">Dukha</p>
-        <audio controls class="w-full">
+      </audio>
+    </div>
+    <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
+      <p class="mb-4 text-lg font-bold text-pink-300">Dukha</p>
+      <audio controls class="track-audio w-full">
         <source src="Audios/Dukha.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
-        </audio>
-      </div>
-      </div>
+      </audio>
     </div>
-  </section>
-  </section>
-      </div>
-    </div>
+  </div>
+</div>
+
+<script>
+  const masterSlider = document.getElementById('masterVolume');
+  const audios = document.querySelectorAll('.track-audio');
+
+  masterSlider.addEventListener('input', () => {
+    audios.forEach(audio => {
+      audio.volume = masterSlider.value;
+    });
+  });
+</script>
+
   </section>
   <section id="about" class="relative py-20 px-6 max-w-5xl mx-auto text-center backdrop-blur-lg z-10" style="background-color: rgba(15, 148, 225, 0.3); overflow: hidden;">
     <div class="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20 z-0"></div>
