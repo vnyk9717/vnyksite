@@ -10,7 +10,15 @@
     body {
       margin: 0;
       font-family: 'Bebas Neue', sans-serif;
-      background: linear-gradient(135deg, #4B006E 0%, #8F2FFF 100%);
+      background: linear-gradient(270deg, #4B006E, #8F2FFF, #00FFEE, #FF00CC);
+      background-size: 800% 800%;
+      animation: animatedGradient 15s ease infinite;
+    }
+
+    @keyframes animatedGradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     .parallax {
@@ -287,6 +295,207 @@
 
       lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
     });
+
+    /* ==========================
+       Wavy fluid shader + audio reactivity (no <canvas> in HTML)
+       Inserts a canvas inside .parallax between the <video> and .tint-overlay
+       ========================== */
+    (function () {
+      const parallax = document.querySelector('.parallax');
+      if (!parallax) return;
+      const tint = parallax.querySelector('.tint-overlay');
+
+      // Create canvas dynamically and position it above the video but below the overlay
+      const canvas = document.createElement('canvas');
+      canvas.id = 'wavyFluid';
+      Object.assign(canvas.style, {
+        position: 'absolute',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        zIndex: '2', // video is 1, overlay is 3
+        pointerEvents: 'none'
+      });
+      // place before tint overlay so the tint still colors over it
+      parallax.insertBefore(canvas, tint);
+
+      // Dynamically load Three.js so we don't touch your <head>
+      function loadScript(src) {
+        return new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = src;
+          s.onload = resolve;
+          s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+
+      loadScript('https://cdn.jsdelivr.net/npm/three@0.157.0/build/three.min.js')
+        .then(() => {
+          const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+          renderer.setClearColor(0x000000, 0);
+          renderer.setPixelRatio(window.devicePixelRatio || 1);
+          const scene = new THREE.Scene();
+          const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+          const uniforms = {
+            u_time: { value: 0 },
+            u_resolution: { value: new THREE.Vector2(1, 1) },
+            u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
+            u_audio: { value: 0 }
+          };
+
+          const vertexShader = `
+            varying vec2 vUv;
+            void main(){
+              vUv = uv;
+              gl_Position = vec4(position, 1.0);
+            }
+          `;
+
+          const fragmentShader = `
+            precision highp float;
+            varying vec2 vUv;
+            uniform vec2 u_resolution;
+            uniform float u_time;
+            uniform vec2 u_mouse;
+            uniform float u_audio;
+
+            // Simplex noise helpers
+            vec3 mod289(vec3 x){ return x - floor(x*(1.0/289.0))*289.0; }
+            vec2 mod289(vec2 x){ return x - floor(x*(1.0/289.0))*289.0; }
+            vec3 permute(vec3 x){ return mod289(((x*34.0)+1.0)*x); }
+            float snoise(vec2 v){
+              const vec4 C = vec4(0.211324865405187, 0.366025403784439,
+                                   -0.577350269189626, 0.024390243902439);
+              vec2 i  = floor(v + dot(v, C.yy));
+              vec2 x0 = v - i + dot(i, C.xx);
+              vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+              vec4 x12 = x0.xyxy + C.xxzz;
+              x12.xy -= i1;
+              i = mod289(i);
+              vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
+              vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+              m = m*m ; m = m*m;
+              vec3 x = 2.0*fract(p*C.w) - 1.0;
+              vec3 h = abs(x) - 0.5;
+              vec3 ox = floor(x + 0.5);
+              vec3 a0 = x - ox;
+              vec3 g;
+              g.x  = a0.x  * x0.x  + h.x  * x0.y;
+              g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+              return 130.0 * dot(m, g);
+            }
+
+            void main(){
+              vec2 uv = vUv * u_resolution / min(u_resolution.x, u_resolution.y);
+              float t = u_time * 0.2;
+              // layered noise for fluid feel
+              float n1 = snoise(uv*1.5 + t);
+              float n2 = snoise((uv+u_mouse*0.5)*2.3 - t*0.8);
+              float n = n1*0.6 + n2*0.4;
+
+              // audio-reactive modulation
+              float a = u_audio; // 0..1
+              float ripple = sin((uv.x+uv.y)*4.0 + t*4.0) * 0.5 + 0.5;
+              float mixAmt = clamp(a*1.8, 0.0, 1.0);
+
+              vec3 c1 = vec3(0.97, 0.15, 0.55);
+              vec3 c2 = vec3(0.20, 0.55, 1.00);
+              vec3 c3 = vec3(0.10, 1.00, 0.65);
+
+              vec3 col = mix(c1, c2, 0.5 + 0.5*sin(n*2.2 + a*3.14));
+              col = mix(col, c3, mixAmt * ripple);
+
+              // subtle vignette
+              vec2 p = vUv - 0.5;
+              float vig = 1.0 - smoothstep(0.6, 0.95, length(p));
+              col *= vig;
+
+              gl_FragColor = vec4(col, 0.35 + 0.25 * mixAmt);
+            }
+          `;
+
+          const material = new THREE.ShaderMaterial({
+            uniforms,
+            vertexShader,
+            fragmentShader,
+            transparent: true,
+            depthWrite: false
+          });
+          const quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+          scene.add(quad);
+
+          function resize() {
+            const w = parallax.clientWidth;
+            const h = parallax.clientHeight;
+            renderer.setSize(w, h, false);
+            uniforms.u_resolution.value.set(w, h);
+          }
+          window.addEventListener('resize', resize);
+          resize();
+
+          parallax.addEventListener('mousemove', (e) => {
+            const r = parallax.getBoundingClientRect();
+            uniforms.u_mouse.value.set(
+              (e.clientX - r.left) / r.width,
+              1.0 - (e.clientY - r.top) / r.height
+            );
+          });
+
+          // ===== Audio hookup: react to whichever <audio> is playing =====
+          const audioEls = Array.from(document.querySelectorAll('audio'));
+          const ACtx = window.AudioContext || window.webkitAudioContext;
+          const audioCtx = new ACtx();
+          const analyser = audioCtx.createAnalyser();
+          analyser.fftSize = 512;
+          const data = new Uint8Array(analyser.frequencyBinCount);
+          const sources = new Map();
+          let connectedSource = null;
+
+          function getSourceFor(el){
+            if (!sources.has(el)) {
+              try { sources.set(el, audioCtx.createMediaElementSource(el)); }
+              catch (e) { /* element might already be connected */ }
+            }
+            return sources.get(el) || null;
+          }
+
+          function connect(el){
+            const src = getSourceFor(el);
+            if (!src) return;
+            try { if (connectedSource && connectedSource !== src) connectedSource.disconnect(); } catch(e){}
+            connectedSource = src;
+            try { src.connect(analyser); } catch(e){}
+            try { analyser.connect(audioCtx.destination); } catch(e){}
+          }
+
+          audioEls.forEach(el => {
+            el.addEventListener('play', () => {
+              // pause others so only one drives the shader
+              audioEls.forEach(o => { if (o !== el) o.pause(); });
+              if (audioCtx.state === 'suspended') audioCtx.resume();
+              connect(el);
+            });
+          });
+
+          function audioLevel(){
+            analyser.getByteFrequencyData(data);
+            let sum = 0; for (let i=0;i<data.length;i++) sum += data[i];
+            return (sum / data.length) / 255; // 0..1
+          }
+
+          function tick(t){
+            uniforms.u_time.value = t * 0.001;
+            uniforms.u_audio.value = audioLevel();
+            renderer.render(scene, camera);
+            requestAnimationFrame(tick);
+          }
+          requestAnimationFrame(tick);
+        })
+        .catch(err => console.error('Three.js failed to load', err));
+    })();
   </script>
 
 </body>
