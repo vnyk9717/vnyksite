@@ -171,7 +171,27 @@
       </a>
       </div>
       <!-- Audio Section -->
+       
       <h2 class="text-4xl md:text-5xl text-pink-500 mb-6">Listen</h2>
+<div>
+  <!-- Optional Master Volume Control -->
+  <div class="master-volume">
+    <label class="text-white font-bold">Master Volume</label>
+    <input type="range" min="0" max="1" step="0.01" value="1" id="masterVolume">
+  </div>
+
+  <script>
+    const masterSlider = document.getElementById('masterVolume');
+    const audios = ['audio1','audio2','audio3','audio4'].map(id => document.getElementById(id));
+
+    masterSlider.addEventListener('input', () => {
+      audios.forEach(audio => {
+        audio.volume = masterSlider.value;
+      });
+    });
+  </script>
+</div>
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
       <!-- Audio 1 -->
       <div class="bg-black/40 rounded-xl shadow-lg p-6 flex flex-col items-center">
