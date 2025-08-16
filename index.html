@@ -215,11 +215,34 @@
 <script>
   const masterSlider = document.getElementById('masterVolume');
   const audios = document.querySelectorAll('.track-audio');
+  let fadeInterval = null;
+
+  // Set initial volume for all audio elements
+  audios.forEach(audio => {
+    audio.volume = masterSlider.value;
+  });
+
+  function fadeVolume(targetVolume) {
+    if (fadeInterval) clearInterval(fadeInterval);
+    fadeInterval = setInterval(() => {
+      let done = true;
+      audios.forEach(audio => {
+        const current = audio.volume;
+        const step = 0.02;
+        if (Math.abs(current - targetVolume) > step) {
+          audio.volume += (targetVolume > current ? step : -step);
+          audio.volume = Math.max(0, Math.min(1, audio.volume));
+          done = false;
+        } else {
+          audio.volume = targetVolume;
+        }
+      });
+      if (done) clearInterval(fadeInterval);
+    }, 20);
+  }
 
   masterSlider.addEventListener('input', () => {
-    audios.forEach(audio => {
-      audio.volume = masterSlider.value;
-    });
+    fadeVolume(parseFloat(masterSlider.value));
   });
 </script>
 
